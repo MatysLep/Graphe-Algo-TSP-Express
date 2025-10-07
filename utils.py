@@ -1,11 +1,8 @@
-from typing import Iterable, List, Sequence, Tuple, Optional
-import prim
-from prim import plot_prim_graph
+from typing import Iterable, List, Sequence, Optional, Tuple
+import math
 import matplotlib.pyplot as plt
 import numpy as np
-import math
-
-Point = Tuple[float, float]
+from point import Point
 
 def compute_complete_edges(points: Sequence[Point]) -> List[Tuple[Point, Point]]:
     """
@@ -21,13 +18,12 @@ def compute_complete_edges(points: Sequence[Point]) -> List[Tuple[Point, Point]]
     List[Tuple[Point, Point]]
         Liste des paires (p_i, p_j) avec i < j.
     """
-    n = len(points)
     edges: List[Tuple[Point, Point]] = []
+    n = len(points)
     for i in range(n):
         for j in range(i + 1, n):
             edges.append((points[i], points[j]))
     return edges
-
 
 def draw_complete_graph(points: Sequence[Point],
                         *,
@@ -89,10 +85,10 @@ def draw_complete_graph(points: Sequence[Point],
     fig, ax = plt.subplots(figsize=figsize)
 
     # Tracer toutes les arêtes du graphe complet
-    for (x1, y1), (x2, y2) in compute_complete_edges(points):
-        ax.plot([x1, x2], [y1, y2], linewidth=line_width, alpha=line_alpha)
-        dist = math.hypot(x2 - x1, y2 - y1) #TODO: Ajouter des poids en fonction du mode de livraison
-        mid_x, mid_y = (x1 + x2) / 2, (y1 + y2) / 2
+    for p1, p2 in compute_complete_edges(points):
+        ax.plot([p1.x, p2.x], [p1.y, p2.y], linewidth=line_width, alpha=line_alpha)
+        dist = math.hypot(p2.x - p1.x, p2.y - p1.y)
+        mid_x, mid_y = (p1.x + p2.x) / 2, (p1.y + p2.y) / 2
         ax.annotate(f"{dist:.2f}", (mid_x, mid_y), ha="center", va="center", fontsize=8, color="blue")
 
     # Tracer les points
@@ -109,11 +105,11 @@ def draw_complete_graph(points: Sequence[Point],
     # Annotations
     if annotate:
         if labels is None:
-            for i, (x, y) in enumerate(points):
-                ax.annotate(str(i), (x, y), xytext=(5, 5), textcoords='offset points')
+            for i, p in enumerate(points):
+                ax.annotate(str(i), (p.x, p.y), xytext=(5, 5), textcoords='offset points')
         else:
-            for lab, (x, y) in zip(labels, points):
-                ax.annotate(str(lab), (x, y), xytext=(5, 5), textcoords='offset points')
+            for lab, p in zip(labels, points):
+                ax.annotate(str(lab), (p.x, p.y), xytext=(5, 5), textcoords='offset points')
 
     if save_path:
         fig.savefig(save_path, bbox_inches='tight')
@@ -144,18 +140,14 @@ def compute_adjacence_matrix(points: Sequence[Point]) -> List[List[float]]:
 
     for i in range(n):
         for j in range(i + 1, n):
-            dist = round(math.hypot(points[j][0] - points[i][0],points[j][1] - points[i][1]),2)
+            dist = round(math.hypot(points[j].x - points[i].x, points[j].y - points[i].y), 2)
             matrix[i][j] = dist
             matrix[j][i] = dist
     return matrix
 
-def show_adjacence_matrix(m : List[List[float]]) :
-    name_columns = " "
-    for i in range(len(m)):
-        name_columns += "  " + str(i)
-
-    for i in range(len(m)):
-        print(str(i) + " " + str(m[i]))
+def show_adjacence_matrix(m: List[List[float]]):
+    for i, row in enumerate(m):
+        print(f"{i} {row}")
 
 def plot_complexity_comparison(complexities: list, labels: list, n_max: int = 15):
     """
