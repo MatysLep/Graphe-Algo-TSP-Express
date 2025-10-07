@@ -55,60 +55,6 @@ def compute_mst_prim(W: Sequence[Sequence[float]], start: int = 0) -> Tuple[List
             total_w += w
     return edges, total_w, parent, key
 
-
-def compute_mst_kruskal(W: Sequence[Sequence[float]]) -> Tuple[List[Edge], float]:
-    """
-    Calcule un MST avec l'algorithme de Kruskal (adapté aussi aux graphes denses), complexité O(n^2 log n).
-
-    Retourne
-    --------
-    edges : liste de (u, v, w) formant le MST (n-1 arêtes)
-    total_w : poids total du MST
-    """
-    n = len(W)
-    # Construit la liste des arêtes pour la moitié supérieure (i < j)
-    edge_list: List[Edge] = []
-    for i in range(n):
-        Wi = W[i]
-        for j in range(i + 1, n):
-            edge_list.append((i, j, Wi[j]))
-
-    # Tri par poids croissant
-    edge_list.sort(key=lambda e: e[2])
-
-    parent = list(range(n))
-    rank = [0] * n
-
-    def find(x: int) -> int:
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-
-    def union(a: int, b: int) -> bool:
-        ra, rb = find(a), find(b)
-        if ra == rb:
-            return False
-        if rank[ra] < rank[rb]:
-            parent[ra] = rb
-        elif rank[ra] > rank[rb]:
-            parent[rb] = ra
-        else:
-            parent[rb] = ra
-            rank[ra] += 1
-        return True
-
-    mst: List[Edge] = []
-    total = 0.0
-    for u, v, w in edge_list:
-        if union(u, v):
-            mst.append((u, v, w))
-            total += w
-            if len(mst) == n - 1:
-                break
-    return mst, total
-
-
 def odd_degree_vertices(mst_edges: List[Edge], n: int) -> List[int]:
     """Retourne la liste des sommets de degré impair dans le MST."""
     deg = [0] * n
@@ -254,32 +200,29 @@ def christophides(
     n = len(W)
 
     # 1) MST : Prim si n > 100, sinon Kruskal (conforme au squelette demandé)
-    if n > 100:
-        mst_edges, _, parent, key = compute_mst_prim(W, start)
-    else:
-        mst_edges, _ = compute_mst_kruskal(W)
-        # Construit parent/key en enracinant le MST en 'start'
-        parent = [None] * n  # type: ignore[assignment]
-        key = [float('inf')] * n
-        # Construit l'adjacence du MST puis BFS pour remplir parent/key
-        adj: Dict[int, List[int]] = {i: [] for i in range(n)}
-        for u, v, w in mst_edges:
-            adj[u].append(v)
-            adj[v].append(u)
-        # BFS simple pour définir les parents et les poids key
-        from collections import deque
-        dq = deque([start])
-        parent[start] = None
-        key[start] = 0.0
-        visited = {start}
-        while dq:
-            u = dq.popleft()
-            for v in adj[u]:
-                if v not in visited:
-                    visited.add(v)
-                    parent[v] = u
-                    key[v] = W[u][v]
-                    dq.append(v)
+    mst_edges, _, parent, key = compute_mst_prim(W, start)
+    # Construit parent/key en enracinant le MST en 'start'
+    parent = [None] * n  # type: ignore[assignment]
+    key = [float('inf')] * n
+    # Construit l'adjacence du MST puis BFS pour remplir parent/key
+    adj: Dict[int, List[int]] = {i: [] for i in range(n)}
+    for u, v, w in mst_edges:
+        adj[u].append(v)
+        adj[v].append(u)
+    # BFS simple pour définir les parents et les poids key
+    from collections import deque
+    dq = deque([start])
+    parent[start] = None
+    key[start] = 0.0
+    visited = {start}
+    while dq:
+        u = dq.popleft()
+        for v in adj[u]:
+            if v not in visited:
+                visited.add(v)
+                parent[v] = u
+                key[v] = W[u][v]
+                dq.append(v)
 
     # 2) Sommets de degré impair dans le MST
     odd = odd_degree_vertices(mst_edges, n)

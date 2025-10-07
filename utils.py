@@ -4,26 +4,75 @@ import matplotlib.pyplot as plt
 import numpy as np
 from point import Point
 
-def compute_complete_edges(points: Sequence[Point]) -> List[Tuple[Point, Point]]:
-    """
-    Génère toutes les arêtes du graphe complet pour une liste de points.
+# ----------------------------
+# Utilitaires distances / temps
+# ----------------------------
+def distance(p1: Point, p2: Point) -> float:
+    """Distance euclidienne (units arbitraires)."""
+    return math.hypot(p1.x - p2.x, p1.y - p2.y)
 
-    Parameters
-    ----------
-    points : Sequence[Point]
-        Liste/tuple de points (x, y).
 
-    Returns
-    -------
-    List[Tuple[Point, Point]]
-        Liste des paires (p_i, p_j) avec i < j.
-    """
-    edges: List[Tuple[Point, Point]] = []
+def build_distance_matrix(points: List[Point]) -> List[List[float]]:
     n = len(points)
+    W = [[0.0] * n for _ in range(n)]
     for i in range(n):
         for j in range(i + 1, n):
-            edges.append((points[i], points[j]))
-    return edges
+            d = distance(points[i], points[j])
+            W[i][j] = W[j][i] = d
+    return W
+
+
+def dist_to_time(W_dist: Sequence[Sequence[float]], speed: Optional[float]) -> List[List[float]]:
+    """
+    Convertit distances -> temps si 'speed' (vitesse en unités distance/heure) est fourni.
+    Sinon, on considère la matrice déjà exprimée en unités de temps.
+    """
+    n = len(W_dist)
+    if speed is None:
+        # On suppose que W_dist est déjà en temps
+        return [list(row) for row in W_dist]
+    if speed <= 0:
+        raise ValueError("La vitesse doit être > 0.")
+    return [[(W_dist[i][j] / speed) for j in range(n)] for i in range(n)]
+
+# ----------------------------
+# Visualisation
+# ----------------------------
+def plot_tour(points: List[Point], tour: List[int]) -> None:
+    xs = [points[i].x for i in range(len(points))]
+    ys = [points[i].y for i in range(len(points))]
+
+    depot_label_done = False
+    express_label_done = False
+    normal_label_done = False
+
+    # Scatter
+    for i, p in enumerate(points):
+        if i == 0 and not depot_label_done:
+            plt.scatter([p.x], [p.y], s=120, marker="s", label="Dépôt (0)")
+            depot_label_done = True
+        elif p.est_express:
+            label = "Express" if not express_label_done else None
+            plt.scatter([p.x], [p.y], s=60, marker="o", label=label)
+            express_label_done = True
+        else:
+            label = "Normal" if not normal_label_done else None
+            plt.scatter([p.x], [p.y], s=60, marker="^", label=label)
+            normal_label_done = True
+
+        plt.text(p.x, p.y, f" {i}", fontsize=9)
+
+
+    # Edges
+    for i in range(len(tour) - 1):
+        a, b = tour[i], tour[i + 1]
+        plt.plot([points[a].x, points[b].x], [points[a].y, points[b].y])
+
+    plt.title("Tournée finale (backbone express + insertion gloutonne par I)")
+    plt.legend()
+    plt.axis("equal")
+    plt.tight_layout()
+    plt.show()
 
 def draw_complete_graph(points: Sequence[Point],
                         *,
@@ -87,7 +136,7 @@ def draw_complete_graph(points: Sequence[Point],
     # Tracer toutes les arêtes du graphe complet
     for p1, p2 in compute_complete_edges(points):
         ax.plot([p1.x, p2.x], [p1.y, p2.y], linewidth=line_width, alpha=line_alpha)
-        dist = math.hypot(p2.x - p1.x, p2.y - p1.y)
+        dist = distance(p1, p2)
         mid_x, mid_y = (p1.x + p2.x) / 2, (p1.y + p2.y) / 2
         ax.annotate(f"{dist:.2f}", (mid_x, mid_y), ha="center", va="center", fontsize=8, color="blue")
 
@@ -117,6 +166,27 @@ def draw_complete_graph(points: Sequence[Point],
         plt.show()
 
     return ax
+
+def compute_complete_edges(points: Sequence[Point]) -> List[Tuple[Point, Point]]:
+    """
+    Génère toutes les arêtes du graphe complet pour une liste de points.
+
+    Parameters
+    ----------
+    points : Sequence[Point]
+        Liste/tuple de points (x, y).
+
+    Returns
+    -------
+    List[Tuple[Point, Point]]
+        Liste des paires (p_i, p_j) avec i < j.
+    """
+    edges: List[Tuple[Point, Point]] = []
+    n = len(points)
+    for i in range(n):
+        for j in range(i + 1, n):
+            edges.append((points[i], points[j]))
+    return edges
 
 def compute_adjacence_matrix(points: Sequence[Point]) -> List[List[float]]:
     """
@@ -149,6 +219,9 @@ def show_adjacence_matrix(m: List[List[float]]):
     for i, row in enumerate(m):
         print(f"{i} {row}")
 
+# ----------------------------
+# Complexité
+# ----------------------------
 def plot_complexity_comparison(complexities: list, labels: list, n_max: int = 15):
     """
     Affiche la croissance des complexités asymptotiques données en fonction de n.
