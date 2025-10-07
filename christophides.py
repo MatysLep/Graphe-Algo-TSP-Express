@@ -1,7 +1,5 @@
 from typing import Sequence, List, Tuple, Optional, Dict
 
-import prim
-
 Edge = Tuple[int, int, float]
 
 
