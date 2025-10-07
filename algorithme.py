@@ -1,8 +1,4 @@
-from typing import List, Sequence, Tuple, Optional
-import math
 import random
-import matplotlib.pyplot as plt
-
 from utils import *
 from point import Point
 from christophides import christophides
@@ -170,37 +166,8 @@ def tsp_mixte_backbone_I(points: List[Point],alpha: float,beta: float,w_express:
     I_final, alpha_term, beta_term, t_arr = compute_I(W_time, tour_final, weights, alpha, beta)
     return tour_final, I_final, alpha_term, beta_term, t_arr
 
+def run(points : List[Point], alpha: float, beta: float, w_express: float, w_normal: float, max_hours: float, speed: Optional[float] = None):
 
-# ----------------------------
-# CLI / Démo
-# ----------------------------
-def make_demo_points(n_total: int, ratio_express: float, seed: int = 42) -> List[Point]:
-    """
-    Génère un jeu de points aléatoires (dépôt = (0,0)), 'ratio_express' dans (0..1).
-    """
-    random.seed(seed)
-    pts: List[Point] = [Point(0.0, 0.0, est_express=False)]  # dépôt index 0
-    for _ in range(n_total - 1):
-        x = random.uniform(0, 10)
-        y = random.uniform(0, 10)
-        est_ex = (random.random() < ratio_express)
-        pts.append(Point(x, y, est_express=est_ex))
-    return pts
-
-
-def main():
-    alpha = 1.0
-    beta = 1.0
-    w_express = 3.0
-    w_normal = 1.0
-    max_hours = 8.0
-    speed = 30
-    random_n = 300
-    ratio_express = 0.5
-    plot = True
-
-    # Crée un petit set de démo si pas encore de lecteur de fichier
-    points = make_demo_points(random_n, ratio_express, seed=42)
 
     # Exécution
     tour, I_final, alpha_term, beta_term, t_arr = tsp_mixte_backbone_I(
@@ -227,9 +194,8 @@ def main():
         typ = "DEPOT" if node == 0 else ("EXPRESS" if points[node].est_express else "NORMAL")
         print(f"  pos {pos:02d}: node {node:02d}  {typ:7s}  t={t_arr[pos]:.3f} h")
 
-    if plot:
-        plot_tour(points, tour)
+    plot_tour(points, tour)
 
 
 if __name__ == "__main__":
-    main()
+    run()

@@ -1,3 +1,4 @@
+import random
 from typing import Iterable, List, Sequence, Optional, Tuple
 import math
 import matplotlib.pyplot as plt
@@ -141,8 +142,8 @@ def draw_complete_graph(points: Sequence[Point],
         ax.annotate(f"{dist:.2f}", (mid_x, mid_y), ha="center", va="center", fontsize=8, color="blue")
 
     # Tracer les points
-    xs = [p[0] for p in points]
-    ys = [p[1] for p in points]
+    xs = [p.x for p in points]
+    ys = [p.y for p in points]
     ax.scatter(xs, ys, s=point_size)
 
     # Options d’axes
@@ -218,6 +219,22 @@ def compute_adjacence_matrix(points: Sequence[Point]) -> List[List[float]]:
 def show_adjacence_matrix(m: List[List[float]]):
     for i, row in enumerate(m):
         print(f"{i} {row}")
+
+# ----------------------------
+# Démo
+# ----------------------------
+def make_demo_points(n_total: int, ratio_express: float, seed: int = 42) -> List[Point]:
+    """
+    Génère un jeu de points aléatoires (dépôt = (0,0)), 'ratio_express' dans (0..1).
+    """
+    random.seed(seed)
+    pts: List[Point] = [Point(0.0, 0.0, est_express=False)]  # dépôt index 0
+    for _ in range(n_total - 1):
+        x = random.uniform(0, 10)
+        y = random.uniform(0, 10)
+        est_ex = (random.random() < ratio_express)
+        pts.append(Point(x, y, est_express=est_ex))
+    return pts
 
 # ----------------------------
 # Complexité
