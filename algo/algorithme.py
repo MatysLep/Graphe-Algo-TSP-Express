@@ -1,6 +1,5 @@
-import random
 from utils import *
-from point import Point
+import point
 from christophides import christophides
 
 # ----------------------------
