@@ -1,6 +1,5 @@
 from utils import *
-import point
-from christophides import christophides
+from .christophides import *
 
 # ----------------------------
 # Calcul de l'objectif I
@@ -193,7 +192,7 @@ def run(points : List[Point], alpha: float, beta: float, w_express: float, w_nor
         typ = "DEPOT" if node == 0 else ("EXPRESS" if points[node].est_express else "NORMAL")
         print(f"  pos {pos:02d}: node {node:02d}  {typ:7s}  t={t_arr[pos]:.3f} h")
 
-    plot_tour(points, tour)
+    plot_tour(points, tour, "Tournée finale (backbone express + insertion gloutonne)")
 
 
 if __name__ == "__main__":

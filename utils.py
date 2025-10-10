@@ -39,7 +39,7 @@ def dist_to_time(W_dist: Sequence[Sequence[float]], speed: Optional[float]) -> L
 # ----------------------------
 # Visualisation
 # ----------------------------
-def plot_tour(points: List[Point], tour: List[int]) -> None:
+def plot_tour(points: List[Point], tour: List[int], title: str) -> None:
     xs = [points[i].x for i in range(len(points))]
     ys = [points[i].y for i in range(len(points))]
 
@@ -69,7 +69,7 @@ def plot_tour(points: List[Point], tour: List[int]) -> None:
         a, b = tour[i], tour[i + 1]
         plt.plot([points[a].x, points[b].x], [points[a].y, points[b].y])
 
-    plt.title("Tournée finale (backbone express + insertion gloutonne par I)")
+    plt.title(title)
     plt.legend()
     plt.axis("equal")
     plt.tight_layout()
