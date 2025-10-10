@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 bruteforce.py - version minimale
 - N_POINTS = 10 (dépôt = 0)

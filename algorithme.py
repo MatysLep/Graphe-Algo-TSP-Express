@@ -198,4 +198,17 @@ def run(points : List[Point], alpha: float, beta: float, w_express: float, w_nor
 
 
 if __name__ == "__main__":
-    run()
+    random_n = 100  # Nombre de points de livraison
+    ratio_express = 0.4  # Ratio des points de livraison express
+    points = make_demo_points(random_n, ratio_express)
+
+    alpha = 1.0  # Influence la durée globale du tour
+    beta = 1.0  # Influence la priorité des clients
+    max_hours = 8.0  # Durée maximale de la tournée (8 h)
+    speed = 30  # Convertit les distances en heures de trajet
+
+    n_express = sum(point.est_express for point in points)
+    w_express = ((random_n - n_express - 1) / (
+                random_n - (random_n - n_express - 1))) + 1  # Importance des clients prioritaires
+    w_normal = 1 / (1 + w_express)  # Importance des clients standards
+    run(points, alpha, beta, w_express, w_normal, max_hours, speed)
