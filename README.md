@@ -23,11 +23,6 @@ Ce projet illustre différentes approches pour résoudre un TSP avec clients pri
 ## Pré-requis
 
 - Python 3.10 ou plus récent.
-- `pip` afin d'installer les dépendances suivantes :
-  ```bash
-  pip install numpy matplotlib
-  ```
-  (Les algorithmes n'utilisent pas de bibliothèques externes supplémentaires.)
 
 ## Mise en place rapide
 
