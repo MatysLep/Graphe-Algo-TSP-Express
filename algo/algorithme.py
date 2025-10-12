@@ -2,6 +2,10 @@ from utils import *
 from .christophides import *
 
 # ----------------------------
+# Hybride : Algorithme hybride : backbone de Christofides et insertion gloutonne
+# ----------------------------
+
+# ----------------------------
 # Calcul de l'objectif I
 # ----------------------------
 def compute_arrival_times(W_time: Sequence[Sequence[float]], tour: List[int]) -> List[float]:
