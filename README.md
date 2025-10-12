@@ -2,6 +2,12 @@
 
 Ce dépôt regroupe plusieurs implémentations d'algorithmes pour résoudre des variantes du **problème du voyageur de commerce (TSP)** avec des clients prioritaires ("express") et des contraintes de temps. Il a été conçu dans le cadre d'un projet pédagogique et fournit à la fois du code réutilisable et des démonstrations prêtes à l'emploi.
 
+## Objectif du projet
+Ce projet illustre différentes approches pour résoudre un TSP avec clients prioritaires "express". Les principaux algorithmes disponibles sont :
+- heuristique hybride basée sur Christofides + insertion gloutonne (`algo/algorithme.py`) ;
+- colonie de fourmis (`algo/aco.py`) ;
+- recherche exhaustive pour validation sur petits jeux de données (`algo/bruteforce.py`).
+
 ## Structure du dépôt
 
 - `point.py` : définition légère de la classe `Point` (coordonnées et statut express).
@@ -34,6 +40,11 @@ Ce dépôt regroupe plusieurs implémentations d'algorithmes pour résoudre des 
    ```bash
    pip install -r requirements.txt
    ```
+3. Lancer :
+   - `python -m pip install jupyter` puis ouvrir `main.ipynb` pour une exploration guidée.
+
+## Résultats attendus
+Les scripts affichent la tournée calculée ainsi que les temps d'arrivée. `utils.plot_tour` déclenche une figure matplotlib.
 
 ## Exécuter les démonstrations
 
