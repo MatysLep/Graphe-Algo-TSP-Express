@@ -211,4 +211,6 @@ if __name__ == "__main__":
 
     n_express = sum(point.est_express for point in points)
     w_express = ((random_n - n_express - 1) / (
-                random_n - (random_n - n_express - 1))) + 1  # Importance des clients priorit
+                random_n - (random_n - n_express - 1))) + 1  # Importance des clients prioritaires
+    w_normal = 1 / (1 + w_express)  # Importance des clients standards
+    run(points, alpha, beta, w_express, w_normal, max_hours, speed)
