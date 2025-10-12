@@ -200,7 +200,7 @@ def run(points : List[Point], alpha: float, beta: float, w_express: float, w_nor
 
     plot_tour(points, tour, "Tournée finale (backbone express + insertion gloutonne)")
 
-    return I_final, alpha_term, beta_term, t_arr, points, tour_with_types
+    return t_arr, tour_with_types
 
 
 if __name__ == "__main__":
