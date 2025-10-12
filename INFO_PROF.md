@@ -17,12 +17,7 @@ Ce projet illustre différentes approches pour résoudre un TSP avec clients pri
    pip install -r requirements.txt
    ```
 3. Lancer au choix :
-   - `python -m algo.bruteforce` pour le brute force ;
-   - le bloc de démonstration indiqué dans le README pour `algo/algorithme.py` ;
-   - ou `python -m pip install jupyter` puis ouvrir `main.ipynb` pour une exploration guidée.
+   - `python -m pip install jupyter` puis ouvrir `main.ipynb` pour une exploration guidée.
 
 ## Résultats attendus
 Les scripts affichent la tournée calculée ainsi que les temps d'arrivée. `utils.plot_tour` déclenche une figure matplotlib.
-
-## Remarque du professeur
-Remarque : vous pouvez utiliser d’autres langages que Python si vous le souhaitez mais vous devez vous assurer que nous puissions l’exécuter (avec des instructions).
