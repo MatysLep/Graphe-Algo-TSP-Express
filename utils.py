@@ -275,3 +275,19 @@ def plot_complexity_comparison(complexities: list, labels: list, n_max: int = 15
     plt.grid(True, which="both", ls="--", alpha=0.5)
     plt.tight_layout()
     plt.show()
+
+    # ----------------------------
+    # Calcul de l'indice de EPI compris ente 0 et 1 
+    # et qui permet de quantifier à quel point les points express sont livrés tôt dans le tour.
+    # Une valeur proche de 1 indique que les points express sont livrés très tôt.
+    # ----------------------------
+def compute_epi(tour_with_types, w_express, random_n) -> float:
+    numerator = 0
+    denominator = 0
+    for element in tour_with_types:
+        if element[2] == "EXPRESS":
+            numerator += w_express*(1 - ((element[0])/(random_n - 1)))
+            denominator += w_express
+
+    epi = numerator/denominator
+    return epi

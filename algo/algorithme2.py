@@ -46,12 +46,15 @@ def tsp_pondere_backbone(points: List[Point], alpha: float, beta: float, w_expre
         tour_express = []
 
     # 2. Phase 2 : Christofides sur les points normaux
-    subset_normals = [depot_idx] + idx_normals
-    W_normal = [[W_time[i][j] for j in subset_normals] for i in subset_normals]
-    edges_norm, _, _, _ = christophides(W_normal, start=0)
+    if idx_normals != []:
+        subset_normals = [depot_idx] + idx_normals
+        W_normal = [[W_time[i][j] for j in subset_normals] for i in subset_normals]
+        edges_norm, _, _, _ = christophides(W_normal, start=0)
 
-    tour_local = [u for (u, v, _) in edges_norm] + [edges_norm[-1][1]]
-    tour_normals = [subset_normals[i] for i in tour_local]
+        tour_local = [u for (u, v, _) in edges_norm] + [edges_norm[-1][1]]
+        tour_normals = [subset_normals[i] for i in tour_local]
+    else:
+        tour_normals = [depot_idx, depot_idx]
 
     # 3. Phase 3 : Combinaison des deux tours
     tour_final = tour_express[:-1] + tour_normals[1:]
@@ -98,7 +101,7 @@ def tsp_pondere_backbone(points: List[Point], alpha: float, beta: float, w_expre
     for node in tour_final:
         if node == depot_idx:
             continue
-        somme_priorites += w_express if points[node].est_express else w_normal
+        somme_priorites += arrival_times[tour_final.index(node)]*(w_express if points[node].est_express else w_normal)
 
     I_final = alpha * duree_totale + beta * somme_priorites
     alpha_term = alpha * duree_totale
@@ -135,11 +138,15 @@ def run(points : List[Point], alpha: float, beta: float, w_express: float, w_nor
 
     # Détails par noeud (utile pour rapport)
     print("\nDétails des noeuds visités (index, type, t_arr):")
+    tour_with_types = []
     for pos, node in enumerate(tour):
         typ = "DEPOT" if node == 0 else ("EXPRESS" if points[node].est_express else "NORMAL")
+        tour_with_types.append((pos, node, typ, t_arr[pos]))
         print(f"  pos {pos:02d}: node {node:02d}  {typ:7s}  t={t_arr[pos]:.3f} h")
 
-    plot_tour(points, tour, "Tournée finale (Christofides + backbone express)")
+    plot_tour(points, tour, "Tournée finale (backbone express + insertion gloutonne)")
+
+    return I_final, alpha_term, beta_term, t_arr, points, tour_with_types
 
 
 if __name__ == "__main__":

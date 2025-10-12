@@ -188,11 +188,15 @@ def run(points : List[Point], alpha: float, beta: float, w_express: float, w_nor
 
     # Détails par noeud (utile pour rapport)
     print("\nDétails des noeuds visités (index, type, t_arr):")
+    tour_with_types = []
     for pos, node in enumerate(tour):
         typ = "DEPOT" if node == 0 else ("EXPRESS" if points[node].est_express else "NORMAL")
+        tour_with_types.append((pos, node, typ, t_arr[pos]))
         print(f"  pos {pos:02d}: node {node:02d}  {typ:7s}  t={t_arr[pos]:.3f} h")
 
     plot_tour(points, tour, "Tournée finale (backbone express + insertion gloutonne)")
+
+    return I_final, alpha_term, beta_term, t_arr, points, tour_with_types
 
 
 if __name__ == "__main__":
