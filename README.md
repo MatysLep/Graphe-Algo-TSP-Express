@@ -1,58 +1,73 @@
-# Graphe Algo TSP Express
+# 🚚 Graphe-Algo-TSP-Express
+> **Optimiser la logistique grâce à la théorie des graphes : une solution hybride pour le Problème du Voyageur de Commerce (TSP) avec gestion de contraintes "Express".**
 
-Ce dépôt regroupe plusieurs implémentations d'algorithmes pour résoudre des variantes du **problème du voyageur de commerce (TSP)** avec des clients prioritaires ("express") et des contraintes de temps. Il a été conçu dans le cadre d'un projet pédagogique et fournit à la fois du code réutilisable et des démonstrations prêtes à l'emploi.
+![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
+![Matplotlib](https://img.shields.io/badge/Visualization-Matplotlib-11557c?logo=python)
+![NumPy](https://img.shields.io/badge/Computation-NumPy-013243?logo=numpy)
 
-## Objectif du projet
-Ce projet illustre différentes approches pour résoudre un TSP avec clients prioritaires "express". Les principaux algorithmes disponibles sont :
-- heuristique hybride basée sur Christofides + insertion gloutonne (`algo/algorithme.py`) ;
-- colonie de fourmis (`algo/aco.py`) ;
-- recherche exhaustive pour validation sur petits jeux de données (`algo/bruteforce.py`).
+---
 
-## Structure du dépôt
+## 🎯 Contexte & Objectif
+Projet réalisé dans le cadre du module "Graphes et Algorithmes" à l'**IMT Nord Europe**.
 
-- `point.py` : définition légère de la classe `Point` (coordonnées et statut express).
-- `utils.py` : fonctions utilitaires pour générer des points, calculer des distances/matrices et visualiser une tournée.
-- `algo/` : algorithmes principaux
-  - `algorithme.py` : heuristique hybride (Christofides + insertion gloutonne minimisant l'objectif pondéré \(I = \alpha T + \beta \sum w_i t_i\)).
-  - `christophides.py` : implémentation de Christofides (MST, appariement, raccourcis).
-  - `aco.py` : optimisation par colonie de fourmis adaptée au contexte express/normal.
-  - `bruteforce.py` : recherche exhaustive pour de très petits jeux de données (contrainte : express avant normaux).
-  - `algorithme2.py`, `kruskal.py` : variantes et briques complémentaires.
-- `main.ipynb` : carnet Jupyter illustrant l'utilisation des différents modules.
+**Le Défi : Dompter la complexité NP-Difficile**
+Le problème du Voyageur de Commerce (TSP) est notoirement **NP-Difficile** : le temps de calcul pour trouver la solution optimale explose factoriellement ($O(n!)$) avec le nombre de villes, rendant les méthodes exactes inutilisables pour le passage à l'échelle.
 
-## Pré-requis
+**Pourquoi ces choix algorithmiques ?**
+Comme détaillé dans le *Rapport de Projet*, nous avons implémenté une double approche pour analyser ce compromis coût/performance :
+1.  **Brute Force** : Sert de "vérité terrain" pour valider la correction des résultats sur de petites instances ($n < 10$).
+2.  **Algorithme de Christofides** : Choisi spécifiquement car il constitue la **référence théorique** pour le TSP métrique. Il garantit une solution au pire 1.5 fois plus longue que l'optimale (ratio 3/2), surclassant la simple approximation MST (ratio 2) ou les approches purement gloutonnes, offrant ainsi le meilleur équilibre entre temps d'exécution polynomial et qualité de résultat.
 
-- Python 3.10 ou plus récent.
+## 🏗️ Aperçu Technique & Architecture
+Ce projet implémente une approche modulaire pour résoudre le TSP (Traveling Salesperson Problem), en comparant des méthodes exactes et approximatives. L'architecture sépare clairement la **logique algorithmique** (`algo/`), les **structures de données** (`point.py`) et les **outils de visualisation/analyse** (`utils.py`).
 
-## Mise en place rapide
+L'implémentation phare est l'**Algorithme de Christofides**, une méthode sophistiquée offrant une approximation garantie (factor 1.5) pour le TSP métrique, construite via un pipeline de transformations de graphes (MST -> Matching -> Eulerian -> Hamiltonian).
 
-1. Créez et activez un environnement virtuel :
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # sous Windows : .venv\Scripts\activate
-   ```
-2. Installez les dépendances :
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Lancer :
-   - `python -m pip install jupyter` puis ouvrir `main.ipynb` pour une exploration guidée.
+## ✨ Fonctionnalités Clés
+- 🎯 **Résolution Hybride** : Comparaison directe entre une solution exacte (**Brute Force** O(n!)) et une approximation rapide (**Christofides** polynomial).
+- 📦 **Gestion "Express"** : Prise en charge de points de livraison prioritaires ("Express") modifiant la logique de coût et de tournée (`utils.py`).
+- 📊 **Visualisation Interactive** : Génération automatique de graphiques matplotlib pour visualiser les tournées finales et comparer les courbes de complexité asymptotique.
+- 🧮 **Algorithmes Avancés** : Implémentation "from scratch" de Prim (MST), Hierholzer (Tour Eulérien) et d'un Matching Glouton.
 
-## Résultats attendus
-Les scripts affichent la tournée calculée ainsi que les temps d'arrivée. `utils.plot_tour` déclenche une figure matplotlib.
+## 🛠️ Stack Technique
 
-## Exécuter les démonstrations
+| Catégorie | Technologies |
+| :--- | :--- |
+| **Langage** | Python 3 |
+| **Algorithmes** | Christofides, Prim, Kruskal, Hierholzer, Brute Force |
+| **Calcul Scientifique** | NumPy |
+| **Visualisation** | Matplotlib |
+| **Format** | Jupyter Noteook (`main.ipynb`) & Scripts modulaires |
 
-### 1. Recherche exhaustive
+## 🚀 Installation & Usage
 
-Pour vérifier le comportement sur un petit ensemble (\< 11 points), lancez :
+Cloner le projet et installer les dépendances nécessaires.
 
 ```bash
-python -m algo.bruteforce
+# Cloner le dépôt
+git clone https://github.com/MatysLep/Graphe-Algo-TSP-Express.git
+cd Graphe-Algo-TSP-Express
+
+# Créer un environnement virtuel (recommandé)
+python3 -m venv .venv
+source .venv/bin/activate  # Sur Windows : .venv\Scripts\activate
+
+# Installer les dépendances
+pip install matplotlib numpy
+
+# Lancer le notebook de démonstration ou le script principal
+# (Exemple si lancement via script)
+python algo/christophides.py 
+# Ou ouvrir main.ipynb via Jupyter
 ```
 
-Le script génère un jeu de données aléatoire, calcule la tournée optimale sous contrainte "express d'abord" et imprime la matrice de distances.
+## 💡 Challenge & Apprentissage
 
-## Carnet Jupyter
+Un défi majeur de ce projet a été l'implémentation de **l'étape de couplage (Matching) dans l'algorithme de Christofides**.
 
-Le fichier `main.ipynb` rassemble des exemples plus détaillés (visualisations, comparaisons de complexités…). Ouvrez-le dans Jupyter Lab/Notebook après avoir installé les dépendances :
+L'algorithme théorique requiert un *Minimum Weight Perfect Matching* (MWPM), dont la résolution exacte passe généralement par l'algorithme des "Blossom" (Edmonds), excessivement complexe à implémenter pour un projet de cette échelle.
+
+**Solution :**
+J'ai opté pour une approche pragmatique en implémentant une **heuristique gloutonne (Greedy Heuristic)** pour le couplage des sommets de degré impair. 
+- Au lieu de chercher le matching global optimal, l'algorithme sélectionne itérativement l'arête la moins coûteuse connectant deux sommets non appariés.
+- **Résultat** : Une réduction drastique de la complexité du code tout en maintenant une approximation très proche de l'optimale pour les instances de test, un compromis ingénierie réaliste entre perfection théorique et maintenabilité.
